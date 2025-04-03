@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ProDiet - Meal Registration</title>
+  <link rel="stylesheet" href="/styles.css">
+  <style>
+    body {
+      display: flex;
+      min-height: 100vh;
+      background: linear-gradient(135deg, #1A3C34, #FF6F61);
+      font-family: 'Poppins', sans-serif;
+    }
+    .sidebar {
+      width: 250px;
+      background: rgba(26, 60, 52, 0.95);
+      backdrop-filter: blur(10px);
+      color: white;
+      padding: 20px;
+      box-shadow: 2px 0 10px rgba(0, 0, 0, 0.2);
+      position: fixed;
+      top: 0;
+      bottom: 0;
+      margin-top: 70px;
+    }
+    .sidebar .user-info {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+    .sidebar .user-info img {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      margin-bottom: 10px;
+      border: 2px solid #FF6F61;
+    }
+    .sidebar .user-info h3 {
+      margin: 0;
+      font-size: 18px;
+      font-weight: 600;
+    }
+    .sidebar ul {
+      list-style: none;
+      padding: 0;
+    }
+    .sidebar ul li {
+      margin: 15px 0;
+    }
+    .sidebar ul li a {
+      color: white;
+      text-decoration: none;
+      font-size: 16px;
+      display: block;
+      padding: 10px;
+      border-radius: 8px;
+      transition: background 0.3s ease, transform 0.3s ease;
+    }
+    .sidebar ul li a:hover {
+      background: rgba(255, 255, 255, 0.1);
+      transform: translateX(5px);
+    }
+    .content {
+      flex: 1;
+      padding: 100px 30px 30px;
+      margin-left: 250px;
+      display: flex;
+      gap: 20px;
+    }
+    .meal-logging, .meal-dashboard {
+      flex: 1;
+      background: #FFFFFF;
+      padding: 20px;
+      border-radius: 15px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+    }
+    .meal-logging h2, .meal-dashboard h3 {
+      color: #1A3C34;
+      margin-bottom: 15px;
+      font-weight: 600;
+    }
+    #mealForm {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+    .food-entry {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    .food-entry select, .food-entry input {
+      flex: 1;
+      min-width: 150px;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    }
+    .food-entry select:focus, .food-entry input:focus {
+      border-color: #FF6F61;
+      box-shadow: 0 0 5px rgba(255, 111, 97, 0.3);
+      outline: none;
+    }
+    .food-entry button {
+      background-color: #f44336;
+      padding: 8px;
+      font-size: 14px;
+      min-width: 40px;
+      border: none;
+      border-radius: 8px;
+      color: white;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+    .food-entry button:hover {
+      background-color: #d32f2f;
+    }
+    #mealType, #mealDate {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    }
+    #mealType:focus, #mealDate:focus {
+      border-color: #FF6F61;
+      box-shadow: 0 0 5px rgba(255, 111, 97, 0.3);
+      outline: none;
+    }
+    #addFoodBtn {
+      background-color: #1A3C34;
+      padding: 8px;
+      font-size: 14px;
+      border: none;
+      border-radius: 8px;
+      color: white;
+      cursor: pointer;
+      transition: background 0.3s ease, transform 0.3s ease;
+    }
+    #addFoodBtn:hover {
+      background-color: #14332A;
+      transform: translateY(-2px);
+    }
+    #mealForm button[type="submit"] {
+      background: #FF6F61;
+      padding: 12px;
+      font-size: 16px;
+      border: none;
+      border-radius: 8px;
+      color: white;
+      cursor: pointer;
+      transition: background 0.3s ease, transform 0.3s ease;
+    }
+    #mealForm button[type="submit"]:hover {
+      background: #E65B50;
+      transform: translateY(-2px);
+    }
+    .meal-dashboard {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+    .total-summary, .meal-type-section {
+      padding: 15px;
+      background: linear-gradient(135deg, #F5F5F5, #E0E0E0);
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    }
+    .total-summary h4, .meal-type-section h4 {
+      color: #1A3C34;
+      margin-bottom: 10px;
+      font-weight: 600;
+    }
+    .total-summary p, .meal-type-section p {
+      margin: 5px 0;
+      color: #333;
+    }
+    .meal-record {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px;
+      background: #FFFFFF;
+      border-radius: 8px;
+      margin-bottom: 5px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+    }
+    .meal-record button {
+      background-color: #f44336;
+      padding: 5px 10px;
+      font-size: 12px;
+      border: none;
+      border-radius: 5px;
+      color: white;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+    .meal-record button:hover {
+      background-color: #d32f2f;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Welcome to ProDiet</h1>
+  </header>
+
+  <div class="sidebar">
+    <div class="user-info">
+      <img id="sidebarPhoto" src="https://placehold.co/80x80" alt="User Avatar">
+      <h3 id="userName">User</h3>
+    </div>
+    <ul>
+      <li><a href="/profile.html">Profile</a></li>
+      <li><a href="/meal-registration.html">Meal Registration</a></li>
+      <li><a href="#">Meal Plans (Coming Soon)</a></li>
+      <li><a href="#" id="logoutBtn">Logout</a></li>
+    </ul>
+  </div>
+
+  <div class="content">
+    <div class="meal-logging">
+      <h2>Log Your Meal</h2>
+      <form id="mealForm">
+        <label>Meal Date:</label>
+        <input type="date" id="mealDate" name="mealDate" required>
+
+        <label>Meal Type:</label>
+        <select id="mealType" name="mealTypeId" required>
+          <option value="">Select Meal Type</option>
+        </select>
+
+        <div id="foodEntries">
+          <div class="food-entry">
+            <select name="foodId" required>
+              <option value="">Select Food</option>
+            </select>
+            <input type="number" name="quantity" placeholder="Quantity (grams)" required>
+            <button type="button" class="removeFoodBtn">-</button>
+          </div>
+        </div>
+        <button type="button" id="addFoodBtn">Add Another Food</button>
+        <button type="submit">Log Meal</button>
+      </form>
+    </div>
+
+    <div class="meal-dashboard">
+      <h3>Meal Log for <span id="selectedDateDisplay">Today</span></h3>
+      <div class="total-summary">
+        <h4>Total for the Day</h4>
+        <p><strong>Total Calories:</strong> <span id="totalCalories">0</span> kcal/day</p>
+        <p><strong>Total Protein:</strong> <span id="totalProtein">0</span> g</p>
+        <p><strong>Total Carbs:</strong> <span id="totalCarbs">0</span> g</p>
+        <p><strong>Total Fats:</strong> <span id="totalFats">0</span> g</p>
+      </div>
+      <div id="mealTypeSections">
+        <!-- Meal type sections will be populated dynamically -->
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Check if user is logged in
+    const token = localStorage.getItem('token');
+    const userId = localStorage.getItem('userId');
+    if (!token || !userId) {
+      window.location.href = '/login.html';
+    }
+
+    // Fetch user profile to display photo and name
+    async function fetchProfile() {
+      try {
+        const response = await fetch(`/get-profile?userId=${userId}`);
+        if (!response.ok) throw new Error(await response.text());
+        const user = await response.json();
+        document.getElementById('userName').textContent = user.name || 'User';
+        document.getElementById('sidebarPhoto').src = user.photo_url || 'https://placehold.co/80x80';
+      } catch (error) {
+        console.error('Error fetching profile:', error);
+      }
+    }
+
+    // Fetch foods to populate the dropdown
+    async function fetchFoods() {
+      try {
+        const response = await fetch('/get-foods');
+        const foods = await response.json();
+        const foodSelects = document.querySelectorAll('select[name="foodId"]');
+        foodSelects.forEach(select => {
+          const currentValue = select.value;
+          select.innerHTML = '<option value="">Select Food</option>';
+          foods.forEach(food => {
+            const option = document.createElement('option');
+            option.value = food.id;
+            option.textContent = food.name;
+            if (food.id === currentValue) option.selected = true;
+            select.appendChild(option);
+          });
+        });
+      } catch (error) {
+        console.error('Error fetching foods:', error);
+      }
+    }
+
+    // Fetch meal types to populate the dropdown
+    async function fetchMealTypes() {
+      try {
+        const response = await fetch('/get-meal-types');
+        const mealTypes = await response.json();
+        const mealTypeSelect = document.getElementById('mealType');
+        const currentValue = mealTypeSelect.value;
+        mealTypeSelect.innerHTML = '<option value="">Select Meal Type</option>';
+        mealTypes.forEach(type => {
+          const option = document.createElement('option');
+          option.value = type.id;
+          option.textContent = type.name;
+          if (type.id === currentValue) option.selected = true;
+          mealTypeSelect.appendChild(option);
+        });
+      } catch (error) {
+        console.error('Error fetching meal types:', error);
+      }
+    }
+
+    // Set up date selector with past dates only
+    const mealDateInput = document.getElementById('mealDate');
+    const today = new Date().toISOString().split('T')[0];
+    mealDateInput.setAttribute('max', today);
+    mealDateInput.value = today; // Default to today
+
+    // Update selected date display
+    const selectedDateDisplay = document.getElementById('selectedDateDisplay');
+    function updateDateDisplay() {
+      const selectedDate = mealDateInput.value;
+      selectedDateDisplay.textContent = selectedDate === today ? 'Today' : new Date(selectedDate).toLocaleDateString();
+    }
+    mealDateInput.addEventListener('change', () => {
+      updateDateDisplay();
+      fetchDailyMeals();
+    });
+
+    // Add another food entry
+    document.getElementById('addFoodBtn').addEventListener('click', () => {
+      const foodEntries = document.getElementById('foodEntries');
+      const newEntry = document.createElement('div');
+      newEntry.className = 'food-entry';
+      newEntry.innerHTML = `
+        <select name="foodId" required>
+          <option value="">Select Food</option>
+        </select>
+        <input type="number" name="quantity" placeholder="Quantity (grams)" required>
+        <button type="button" class="removeFoodBtn">-</button>
+      `;
+      foodEntries.appendChild(newEntry);
+      fetchFoods();
+    });
+
+    // Remove a food entry
+    document.getElementById('foodEntries').addEventListener('click', (e) => {
+      if (e.target.classList.contains('removeFoodBtn')) {
+        const foodEntries = document.getElementById('foodEntries');
+        if (foodEntries.children.length > 1) {
+          e.target.parentElement.remove();
+        } else {
+          alert('You must have at least one food entry.');
+        }
+      }
+    });
+
+    // Log meal
+    document.getElementById('mealForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const mealTypeId = document.getElementById('mealType').value;
+      const mealDate = mealDateInput.value;
+      const foodEntries = document.querySelectorAll('.food-entry');
+      const foodIds = [];
+      const foodQuantities = [];
+
+      foodEntries.forEach(entry => {
+        const foodId = entry.querySelector('select[name="foodId"]').value;
+        const quantity = parseFloat(entry.querySelector('input[name="quantity"]').value);
+        if (foodId && quantity) {
+          foodIds.push(foodId);
+          foodQuantities.push(quantity);
+        }
+      });
+
+      const data = {
+        userId,
+        mealTypeId,
+        foodIds,
+        foodQuantities,
+        mealDate
+      };
+
+      try {
+        const response = await fetch('/log-meal', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data)
+        });
+
+        if (!response.ok) throw new Error(await response.text());
+
+        alert('Meal logged successfully!');
+        fetchDailyMeals();
+      } catch (error) {
+        console.error('Error logging meal:', error);
+        alert('Error logging meal: ' + error.message);
+      }
+    });
+
+    // Fetch daily meals and update dashboard
+    async function fetchDailyMeals() {
+      const selectedDate = mealDateInput.value;
+      try {
+        // Fetch daily totals for the selected date
+        const summaryResponse = await fetch(`/get-daily-meals?userId=${userId}&date=${selectedDate}`);
+        const summary = await summaryResponse.json();
+        document.getElementById('totalCalories').textContent = summary.totalCalories || 0;
+        document.getElementById('totalProtein').textContent = summary.totalProtein || 0;
+        document.getElementById('totalCarbs').textContent = summary.totalCarbs || 0;
+        document.getElementById('totalFats').textContent = summary.totalFats || 0;
+
+        // Fetch detailed meal records for the selected date
+        const mealResponse = await fetch(`/get-meal-records?userId=${userId}&date=${selectedDate}`);
+        const meals = await mealResponse.json();
+
+        // Group meals by meal type
+        const mealTypeSectionsDiv = document.getElementById('mealTypeSections');
+        mealTypeSectionsDiv.innerHTML = '';
+
+        const mealTypes = [...new Set(meals.map(meal => meal.mealTypeId))];
+        mealTypes.forEach(mealTypeId => {
+          const typeMeals = meals.filter(meal => meal.mealTypeId === mealTypeId);
+          const mealTypeName = typeMeals[0]?.mealTypeName || 'Unknown';
+
+          // Calculate totals for this meal type
+          let typeCalories = 0;
+          let typeProtein = 0;
+          let typeCarbs = 0;
+          let typeFats = 0;
+
+          typeMeals.forEach(meal => {
+            typeCalories += meal.totalCalories || 0;
+            typeProtein += meal.protein || 0;
+            typeCarbs += meal.carbohydrates || 0;
+            typeFats += meal.fats || 0;
+          });
+
+          const sectionDiv = document.createElement('div');
+          sectionDiv.className = 'meal-type-section';
+          sectionDiv.innerHTML = `
+            <h4>${mealTypeName}</h4>
+            <p><strong>Total Calories:</strong> ${typeCalories} kcal</p>
+            <p><strong>Total Protein:</strong> ${typeProtein} g</p>
+            <p><strong>Total Carbs:</strong> ${typeCarbs} g</p>
+            <p><strong>Total Fats:</strong> ${typeFats} g</p>
+          `;
+
+          typeMeals.forEach(meal => {
+            const mealDiv = document.createElement('div');
+            mealDiv.className = 'meal-record';
+            mealDiv.innerHTML = `
+              <div>
+                Foods: ${meal.foodNames.join(', ')} (${meal.foodQuantities.join(', ')}g)
+                <br>Calories: ${meal.totalCalories} kcal, Protein: ${meal.protein}g, Carbs: ${meal.carbohydrates}g, Fats: ${meal.fats}g
+              </div>
+              <button type="button" class="deleteMealBtn" data-id="${meal.id}">-</button>
+            `;
+            sectionDiv.appendChild(mealDiv);
+          });
+
+          mealTypeSectionsDiv.appendChild(sectionDiv);
+        });
+      } catch (error) {
+        console.error('Error fetching daily meals:', error);
+      }
+    }
+
+    // Delete a meal record
+    document.getElementById('mealTypeSections').addEventListener('click', async (e) => {
+      if (e.target.classList.contains('deleteMealBtn')) {
+        const mealId = e.target.getAttribute('data-id');
+        try {
+          const response = await fetch(`/delete-meal/${mealId}`, {
+            method: 'DELETE'
+          });
+          if (!response.ok) throw new Error(await response.text());
+          fetchDailyMeals();
+        } catch (error) {
+          console.error('Error deleting meal:', error);
+          alert('Error deleting meal: ' + error.message);
+        }
+      }
+    });
+
+    // Initial fetch
+    fetchProfile();
+    fetchFoods();
+    fetchMealTypes();
+    fetchDailyMeals();
+    updateDateDisplay();
+
+    // Logout
+    document.getElementById('logoutBtn').addEventListener('click', async (e) => {
+      e.preventDefault();
+      try {
+        const response = await fetch('/logout', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' }
+        });
+
+        if (!response.ok) throw new Error(await response.text());
+
+        localStorage.removeItem('token');
+        localStorage.removeItem('userId');
+        window.location.href = '/index.html';
+      } catch (error) {
+        console.error('Logout Error:', error);
+        alert('Logout Error: ' + error.message);
+      }
+    });
+  </script>
+</body>
+</html>

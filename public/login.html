@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ProDiet - Login</title>
+  <link rel="stylesheet" href="/styles.css">
+  <style>
+    body {
+      min-height: 100vh;
+      background: linear-gradient(135deg, #1A3C34, #FF6F61);
+      font-family: 'Poppins', sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin: 0;
+    }
+    .container {
+      background: #FFFFFF;
+      padding: 30px;
+      border-radius: 15px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+      max-width: 400px;
+      width: 100%;
+    }
+    h2 {
+      text-align: center;
+      color: #1A3C34;
+      margin-bottom: 20px;
+      font-weight: 600;
+    }
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+    label {
+      font-weight: bold;
+      color: #555;
+    }
+    input {
+      padding: 10px;
+      font-size: 16px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    }
+    input:focus {
+      border-color: #FF6F61;
+      box-shadow: 0 0 5px rgba(255, 111, 97, 0.3);
+      outline: none;
+    }
+    button {
+      background: #1A3C34;
+      padding: 12px;
+      font-size: 16px;
+      border: none;
+      border-radius: 8px;
+      color: white;
+      cursor: pointer;
+      transition: background 0.3s ease, transform 0.3s ease;
+    }
+    button:hover {
+      background: #14332A;
+      transform: translateY(-2px);
+    }
+    .link {
+      text-align: center;
+      margin-top: 15px;
+    }
+    .link a {
+      color: #FF6F61;
+      text-decoration: none;
+    }
+    .link a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Login</h2>
+    <form id="loginForm">
+      <label>Email:</label>
+      <input type="email" id="loginEmail" name="email" required>
+
+      <label>Password:</label>
+      <input type="password" id="loginPassword" name="password" required>
+
+      <button type="submit">Login</button>
+    </form>
+
+    <div class="link">
+      <p>Don't have an account? <a href="/signup.html">Sign up here</a></p>
+    </div>
+  </div>
+
+  <script>
+    // Check if user is logged in
+    const token = localStorage.getItem('token');
+    const userId = localStorage.getItem('userId');
+    if (token && userId) {
+      window.location.href = '/index.html'; // Redirect to index if logged in
+    }
+
+    const loginForm = document.getElementById('loginForm');
+
+    loginForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const formData = new FormData(loginForm);
+      const data = {
+        email: formData.get('email'),
+        password: formData.get('password')
+      };
+
+      try {
+        const response = await fetch('/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data)
+        });
+
+        if (!response.ok) throw new Error(await response.text());
+
+        const result = await response.json();
+        localStorage.setItem('token', result.token);
+        localStorage.setItem('userId', result.user.id);
+        window.location.href = '/profile.html';
+      } catch (error) {
+        console.error('Login Error:', error);
+        alert('Login Error: ' + error.message);
+      }
+    });
+  </script>
+</body>
+</html>

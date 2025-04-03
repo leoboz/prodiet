@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ProDiet - Profile</title>
+  <link rel="stylesheet" href="/styles.css">
+  <style>
+    body {
+      display: flex;
+      min-height: 100vh;
+      background: linear-gradient(135deg, #1A3C34, #FF6F61);
+      font-family: 'Poppins', sans-serif;
+    }
+    .sidebar {
+      width: 250px;
+      background: rgba(26, 60, 52, 0.95);
+      backdrop-filter: blur(10px);
+      color: white;
+      padding: 20px;
+      box-shadow: 2px 0 10px rgba(0, 0, 0, 0.2);
+      position: fixed;
+      top: 0;
+      bottom: 0;
+      margin-top: 70px;
+    }
+    .sidebar .user-info {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+    .sidebar .user-info img {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      margin-bottom: 10px;
+      border: 2px solid #FF6F61;
+    }
+    .sidebar .user-info h3 {
+      margin: 0;
+      font-size: 18px;
+      font-weight: 600;
+    }
+    .sidebar ul {
+      list-style: none;
+      padding: 0;
+    }
+    .sidebar ul li {
+      margin: 15px 0;
+    }
+    .sidebar ul li a {
+      color: white;
+      text-decoration: none;
+      font-size: 16px;
+      display: block;
+      padding: 10px;
+      border-radius: 8px;
+      transition: background 0.3s ease, transform 0.3s ease;
+    }
+    .sidebar ul li a:hover {
+      background: rgba(255, 255, 255, 0.1);
+      transform: translateX(5px);
+    }
+    .content {
+      flex: 1;
+      padding: 100px 30px 30px;
+      margin-left: 250px;
+    }
+    .container {
+      background: #FFFFFF;
+      padding: 30px;
+      border-radius: 15px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+      max-width: 500px;
+      margin: 0 auto;
+    }
+    h2 {
+      text-align: center;
+      color: #1A3C34;
+      margin-bottom: 20px;
+      font-weight: 600;
+    }
+    #profileView, #profileForm {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+    #profileView p {
+      margin: 5px 0;
+      color: #333;
+    }
+    #profileView p strong {
+      color: #1A3C34;
+    }
+    #profileForm label {
+      font-weight: bold;
+      color: #555;
+    }
+    #profileForm input, #profileForm select {
+      padding: 10px;
+      font-size: 16px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    }
+    #profileForm input:focus, #profileForm select:focus {
+      border-color: #FF6F61;
+      box-shadow: 0 0 5px rgba(255, 111, 97, 0.3);
+      outline: none;
+    }
+    #editProfileBtn, #profileForm button, #uploadPhotoBtn {
+      padding: 12px;
+      font-size: 16px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.3s ease, transform 0.3s ease;
+    }
+    #editProfileBtn {
+      background-color: #1A3C34;
+      color: white;
+    }
+    #editProfileBtn:hover {
+      background-color: #14332A;
+      transform: translateY(-2px);
+    }
+    #uploadPhotoBtn {
+      background-color: #FF6F61;
+      color: white;
+      margin-top: 10px;
+    }
+    #uploadPhotoBtn:hover {
+      background-color: #E65B50;
+      transform: translateY(-2px);
+    }
+    #profileForm button {
+      background-color: #FF6F61;
+      color: white;
+    }
+    #profileForm button:hover {
+      background-color: #E65B50;
+      transform: translateY(-2px);
+    }
+    #result {
+      margin-top: 20px;
+      padding: 15px;
+      background: linear-gradient(135deg, #F5F5F5, #E0E0E0);
+      border-radius: 8px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Welcome to ProDiet</h1>
+  </header>
+
+  <div class="sidebar">
+    <div class="user-info">
+      <img id="sidebarPhoto" src="https://placehold.co/80x80" alt="User Avatar">
+      <h3 id="userName">User</h3>
+    </div>
+    <ul>
+      <li><a href="/profile.html">Profile</a></li>
+      <li><a href="/meal-registration.html">Meal Registration</a></li>
+      <li><a href="#">Meal Plans (Coming Soon)</a></li>
+      <li><a href="#" id="logoutBtn">Logout</a></li>
+    </ul>
+  </div>
+
+  <div class="content">
+    <div class="container">
+      <h2>Your Profile</h2>
+      <div id="profileView">
+        <p><strong>Name:</strong> <span id="viewName">-</span></p>
+        <p><strong>Weight (kg):</strong> <span id="viewWeight">-</span></p>
+        <p><strong>Height (cm):</strong> <span id="viewHeight">-</span></p>
+        <p><strong>Gender:</strong> <span id="viewGender">-</span></p>
+        <p><strong>Age (years):</strong> <span id="viewAge">-</span></p>
+        <p><strong>Objective:</strong> <span id="viewObjective">-</span></p>
+        <p><strong>Preferences:</strong> <span id="viewPreferences">-</span></p>
+        <p><strong>Restrictions:</strong> <span id="viewRestrictions">-</span></p>
+        <button id="editProfileBtn">Edit Profile</button>
+      </div>
+
+      <form id="profileForm" style="display: none;">
+        <label>Name:</label>
+        <input type="text" id="name" name="name" required>
+
+        <label>Weight (kg):</label>
+        <input type="number" id="weight" name="weight" required>
+
+        <label>Height (cm):</label>
+        <input type="number" id="height" name="height" required>
+
+        <label>Gender:</label>
+        <select id="gender" name="gender" required>
+          <option value="">Select gender</option>
+          <option value="male">Male</option>
+          <option value="female">Female</option>
+        </select>
+
+        <label>Age (years):</label>
+        <input type="number" id="age" name="age" required>
+
+        <label>Objective:</label>
+        <input type="text" id="objective" name="objective">
+
+        <label>Preferences:</label>
+        <input type="text" id="preferences" name="preferences">
+
+        <label>Restrictions:</label>
+        <input type="text" id="restrictions" name="restrictions">
+
+        <label>Profile Photo:</label>
+        <input type="file" id="profilePhoto" name="profilePhoto" accept="image/*">
+        <button type="button" id="uploadPhotoBtn">Upload Photo</button>
+
+        <button type="submit">Save Profile</button>
+      </form>
+
+      <div id="result">
+        <h3>Profile Updated</h3>
+        <p><strong>Name:</strong> <span id="resultName"></span></p>
+        <p><strong>MBR:</strong> <span id="resultMbr"></span> kcal/day</p>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script>
+    // Initialize Supabase client correctly
+    const supabase = window.supabase.createClient(
+      'https://wixwwdmbigtgnrjfgxfp.supabase.co',
+      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndpeHd3ZG1iaWd0Z25yamZneGZwIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc0MzUxNTk2MCwiZXhwIjoyMDU5MDkxOTYwfQ.WpcahYpvhe-vW7K6RrjXqRo7WHGAjR1o6i3qWaRE3tM'
+    );
+
+    // Check if user is logged in
+    const token = localStorage.getItem('token');
+    const userId = localStorage.getItem('userId');
+    if (!token || !userId) {
+      window.location.href = '/login.html';
+    }
+
+    const profileView = document.getElementById('profileView');
+    const profileForm = document.getElementById('profileForm');
+    const editProfileBtn = document.getElementById('editProfileBtn');
+    const resultDiv = document.getElementById('result');
+    const resultName = document.getElementById('resultName');
+    const resultMbr = document.getElementById('resultMbr');
+    const userName = document.getElementById('userName');
+    const sidebarPhoto = document.getElementById('sidebarPhoto');
+    const uploadPhotoBtn = document.getElementById('uploadPhotoBtn');
+
+    // Fetch and display user profile
+    async function fetchProfile() {
+      try {
+        const response = await fetch(`/get-profile?userId=${userId}`);
+        if (!response.ok) throw new Error(await response.text());
+        const user = await response.json();
+
+        // Update view with fetched data
+        document.getElementById('viewName').textContent = user.name || '-';
+        document.getElementById('viewWeight').textContent = user.weight || '-';
+        document.getElementById('viewHeight').textContent = user.height || '-';
+        document.getElementById('viewGender').textContent = user.gender || '-';
+        document.getElementById('viewAge').textContent = user.age || '-';
+        document.getElementById('viewObjective').textContent = user.objective || '-';
+        document.getElementById('viewPreferences').textContent = user.preferences || '-';
+        document.getElementById('viewRestrictions').textContent = user.restrictions || '-';
+        userName.textContent = user.name || 'User';
+        sidebarPhoto.src = user.photo_url || 'https://placehold.co/80x80';
+
+        // Pre-fill form fields
+        document.getElementById('name').value = user.name || '';
+        document.getElementById('weight').value = user.weight || '';
+        document.getElementById('height').value = user.height || '';
+        document.getElementById('gender').value = user.gender || '';
+        document.getElementById('age').value = user.age || '';
+        document.getElementById('objective').value = user.objective || '';
+        document.getElementById('preferences').value = user.preferences || '';
+        document.getElementById('restrictions').value = user.restrictions || '';
+
+        if (user.mbr) {
+          resultName.textContent = user.name;
+          resultMbr.textContent = user.mbr;
+          resultDiv.style.display = 'block';
+        }
+      } catch (error) {
+        console.error('Error fetching profile:', error);
+        alert('Failed to load profile: ' + error.message);
+      }
+    }
+
+    // Toggle between view and edit modes
+    editProfileBtn.addEventListener('click', () => {
+      profileView.style.display = 'none';
+      profileForm.style.display = 'flex';
+    });
+
+    // Upload profile photo
+    async function uploadPhoto() {
+      const fileInput = document.getElementById('profilePhoto');
+      const file = fileInput.files[0];
+      if (!file) return alert('Please select a photo to upload');
+
+      try {
+        const fileName = `${userId}/${file.name}`;
+        const { data, error } = await supabase.storage
+          .from('profile-photos')
+          .upload(fileName, file, { upsert: true });
+
+        if (error) throw new Error('Upload failed: ' + error.message);
+
+        const { data: publicUrlData } = supabase.storage
+          .from('profile-photos')
+          .getPublicUrl(fileName);
+
+        const photoUrl = publicUrlData.publicUrl;
+        if (!photoUrl) throw new Error('Failed to get public URL');
+
+        await updateProfilePhoto(userId, photoUrl);
+        sidebarPhoto.src = photoUrl;
+        alert('Photo uploaded successfully!');
+      } catch (error) {
+        console.error('Error uploading photo:', error);
+        alert('Error uploading photo: ' + error.message);
+      }
+    }
+
+    // Update profile photo URL in DB
+    async function updateProfilePhoto(userId, photoUrl) {
+      try {
+        const response = await fetch('/update-profile-photo', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ userId, photoUrl })
+        });
+        if (!response.ok) throw new Error(await response.text());
+      } catch (error) {
+        console.error('Error updating photo URL:', error);
+        throw new Error('Failed to save photo URL: ' + error.message);
+      }
+    }
+
+    // Attach upload photo event listener
+    uploadPhotoBtn.addEventListener('click', uploadPhoto);
+
+    // Submit updated profile
+    profileForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const formData = new FormData(profileForm);
+      const data = {
+        userId,
+        name: formData.get('name'),
+        weight: parseFloat(formData.get('weight')),
+        height: parseFloat(formData.get('height')),
+        gender: formData.get('gender'),
+        age: parseInt(formData.get('age')),
+        objective: formData.get('objective') || null,
+        preferences: formData.get('preferences') || null,
+        restrictions: formData.get('restrictions') || null
+      };
+
+      try {
+        const response = await fetch('/update-profile', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data)
+        });
+
+        if (!response.ok) throw new Error(await response.text());
+
+        const user = await response.json();
+        userName.textContent = user.name;
+        resultName.textContent = user.name;
+        resultMbr.textContent = user.mbr;
+        resultDiv.style.display = 'block';
+
+        profileView.style.display = 'flex';
+        profileForm.style.display = 'none';
+
+        fetchProfile();
+      } catch (error) {
+        console.error('Profile Update Error:', error);
+        alert('Profile Update Error: ' + error.message);
+      }
+    });
+
+    // Initial fetch
+    fetchProfile();
+
+    // Logout
+    document.getElementById('logoutBtn').addEventListener('click', async (e) => {
+      e.preventDefault();
+      try {
+        const response = await fetch('/logout', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' }
+        });
+
+        if (!response.ok) throw new Error(await response.text());
+
+        localStorage.removeItem('token');
+        localStorage.removeItem('userId');
+        window.location.href = '/login.html';
+      } catch (error) {
+        console.error('Logout Error:', error);
+        alert('Logout Error: ' + error.message);
+      }
+    });
+  </script>
+</body>
+</html>
